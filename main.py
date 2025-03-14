@@ -1,6 +1,6 @@
 from src.preprocessing import collect_data, augment_normalize_data
 from src.resNet50 import extract_features_resnet50
-from src.utils import save_csv
+from src.utils import check_folders, save_csv
 
 RAW_DATA_DIR = 'data/raw'
 PROCESSED_DATA_DIR = 'data/processed'
@@ -9,6 +9,9 @@ DATASET_NAME = 'National Flowers'
 
 def main():
     print('Starting Dandelion!')
+
+    # checking data folders existence
+    check_folders(RAW_DATA_DIR, PROCESSED_DATA_DIR)
 
     # load and augment dataset
     data_paths, labels = collect_data(RAW_DATA_DIR)
