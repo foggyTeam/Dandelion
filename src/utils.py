@@ -22,7 +22,7 @@ def save_csv(df, path, df_name):
 def extract_features(data_generator, model, resnet50=False):
     batches_count = len(data_generator)
     i = 0
-    print(f"\033[93m{batches_count} batches is going to be processed.\033[0m")
+    print(f"\033[93m{batches_count} batches are going to be processed.\033[0m")
 
     # Extracting features:
     features = []
