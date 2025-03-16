@@ -34,7 +34,7 @@ def extract_features_resnet50(data_generator):
             break
     end_time = time()
 
-    print(f"\033[96mProceed in {end_time - start_time}.2f minutes\033[0m")
+    print(f"\033[96mProcessed in {end_time - start_time}.2f minutes\033[0m")
 
     X = np.concatenate(features, axis=0)
     y = np.concatenate([np.argmax(batch, axis=1) for batch in labels], axis=0)
