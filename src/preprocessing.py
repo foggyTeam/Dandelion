@@ -1,7 +1,6 @@
 import os
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import pandas as pd
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 def save_paths(target_dir):
@@ -28,14 +27,11 @@ def collect_data(raw_data_dir):
     return data, labels
 
 
-def augment_normalize_data(data_paths, labels, batch_size=32, target_size=(224, 224)):
+def augment_normalize_data(data_paths, labels, batch_size=64, target_size=(224, 224)):
     # train might be normalized and augmented
     train_transformations = ImageDataGenerator(
         rescale=1. / 255,  # Normalization
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
+        rotation_range=20,
         zoom_range=0.2,
         horizontal_flip=True,
         fill_mode='nearest')
