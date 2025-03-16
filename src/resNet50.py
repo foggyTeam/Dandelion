@@ -9,7 +9,7 @@ from tensorflow.keras.models import Model
 def extract_features_resnet50(data_generator):
     # Initializing ResNet50:
     base_model = ResNet50(weights='imagenet', include_top=False, pooling='avg')  # pretrained model
-    model = Model(inputs=base_model.input, outputs=base_model.get_layer('conv4_block6_out').output)
+    model = Model(inputs=base_model.input, outputs=base_model.output)
 
     batches_count = len(data_generator)
     i = 0
