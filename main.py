@@ -1,6 +1,8 @@
+from src.cnn import extract_features_cnn
+from src.kNN import evaluate_knn
+from src.models import evaluate_classic_models
 from src.preprocessing import collect_data, augment_normalize_data
 from src.resNet50 import extract_features_resnet50
-from src.cnn import extract_features_cnn
 from src.utils import check_folders, save_csv
 
 RAW_DATA_DIR = 'data/raw'
@@ -41,8 +43,10 @@ def main():
             print('\n\033[92mExtracting from test:\033[0m')
             X_test, y_test, test_df = extract_features_cnn(test_data_generator, RAW_DATA_DIR)
             save_csv(test_df, PROCESSED_DATA_DIR, 'cnn_test.csv')
-
+    return
     # train models
+    evaluate_knn(PROCESSED_DATA_DIR)
+    evaluate_classic_models(PROCESSED_DATA_DIR)
 
 
 if __name__ == '__main__':

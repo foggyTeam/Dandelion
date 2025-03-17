@@ -72,74 +72,75 @@ def train_and_evaluate(model, param_grid, X_train, y_train, X_test, y_test, resu
     return best_params
 
 
-cnn_train_path = '../data/processed/cnn_train.csv'
-cnn_test_path = '../data/processed/cnn_test.csv'
-resnet_train_path = '../data/processed/resNet50_train.csv'
-resnet_test_path = '../data/processed/resNet50_test.csv'
+def evaluate_classic_models(processed_data_dir):
+    cnn_train_path = os.path.join(processed_data_dir, 'cnn_train.csv')
+    cnn_test_path = os.path.join(processed_data_dir, 'cnn_test.csv')
+    resnet_train_path = os.path.join(processed_data_dir, 'resNet50_train.csv')
+    resnet_test_path = os.path.join(processed_data_dir, 'resNet50_test.csv')
 
-cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test = load_data(cnn_train_path, cnn_test_path)
-resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test = load_data(resnet_train_path, resnet_test_path)
+    cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test = load_data(cnn_train_path, cnn_test_path)
+    resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test = load_data(resnet_train_path, resnet_test_path)
 
-resnet_X_train, resnet_X_test = apply_pca(resnet_X_train, resnet_X_test)
+    resnet_X_train, resnet_X_test = apply_pca(resnet_X_train, resnet_X_test)
 
-rf_param_grid = {
-    'n_estimators': [50, 100, 200],
-    'max_features': ['sqrt', 'log2', None],
-    'max_depth': [None, 10, 20, 30],
-    'criterion': ['gini', 'entropy']
-}
+    rf_param_grid = {
+        'n_estimators': [50, 100, 200],
+        'max_features': ['sqrt', 'log2', None],
+        'max_depth': [None, 10, 20, 30],
+        'criterion': ['gini', 'entropy']
+    }
 
-gb_param_grid = {
-    'n_estimators': [50, 100, 200],
-    'learning_rate': [0.01, 0.1, 0.2],
-    'max_depth': [3, 5, 7]
-}
+    gb_param_grid = {
+        'n_estimators': [50, 100, 200],
+        'learning_rate': [0.01, 0.1, 0.2],
+        'max_depth': [3, 5, 7]
+    }
 
-svc_param_grid = {
-    'C': [0.1, 1, 10],
-    'kernel': ['linear', 'rbf']
-}
+    svc_param_grid = {
+        'C': [0.1, 1, 10],
+        'kernel': ['linear', 'rbf']
+    }
 
-sgd_param_grid = {
-    'alpha': [0.0001, 0.001, 0.01],
-    'penalty': ['l2', 'l1', 'elasticnet']
-}
+    sgd_param_grid = {
+        'alpha': [0.0001, 0.001, 0.01],
+        'penalty': ['l2', 'l1', 'elasticnet']
+    }
 
-# Обучение и оценка моделей для CNN данных
-print("Training and evaluating models for CNN data")
-rf_best_params = train_and_evaluate(RandomForestClassifier(random_state=42), rf_param_grid, cnn_X_train, cnn_y_train,
-                                    cnn_X_test, cnn_y_test, '../result/CNN/RandomForest')
-gb_best_params = train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_param_grid, cnn_X_train,
-                                    cnn_y_train, cnn_X_test, cnn_y_test, '../result/CNN/GradientBoosting')
-svc_best_params = train_and_evaluate(SVC(random_state=42), svc_param_grid, cnn_X_train, cnn_y_train, cnn_X_test,
-                                     cnn_y_test, '../result/CNN/SVC')
-sgd_best_params = train_and_evaluate(SGDClassifier(random_state=42), sgd_param_grid, cnn_X_train, cnn_y_train,
-                                     cnn_X_test, cnn_y_test, '../result/CNN/SGDClassifier')
-gnb_best_params = train_and_evaluate(GaussianNB(), {}, cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test,
-                                     '../result/CNN/GaussianNB', use_grid_search=False)
+    # Обучение и оценка моделей для CNN данных
+    print("Training and evaluating models for CNN data")
+    rf_best_params = train_and_evaluate(RandomForestClassifier(random_state=42), rf_param_grid, cnn_X_train, cnn_y_train,
+                                        cnn_X_test, cnn_y_test, '../result/CNN/RandomForest')
+    gb_best_params = train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_param_grid, cnn_X_train,
+                                        cnn_y_train, cnn_X_test, cnn_y_test, '../result/CNN/GradientBoosting')
+    svc_best_params = train_and_evaluate(SVC(random_state=42), svc_param_grid, cnn_X_train, cnn_y_train, cnn_X_test,
+                                         cnn_y_test, '../result/CNN/SVC')
+    sgd_best_params = train_and_evaluate(SGDClassifier(random_state=42), sgd_param_grid, cnn_X_train, cnn_y_train,
+                                         cnn_X_test, cnn_y_test, '../result/CNN/SGDClassifier')
+    gnb_best_params = train_and_evaluate(GaussianNB(), {}, cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test,
+                                         '../result/CNN/GaussianNB', use_grid_search=False)
 
-# Обучение и оценка моделей для ResNet данных с лучшими параметрами от CNN
-print("Training and evaluating models for ResNet data with best CNN parameters")
-train_and_evaluate(RandomForestClassifier(random_state=42), rf_best_params, resnet_X_train, resnet_y_train,
-                   resnet_X_test, resnet_y_test, '../result/ResNet/RandomForest_best_cnn', use_grid_search=False)
-train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_best_params, resnet_X_train, resnet_y_train,
-                   resnet_X_test, resnet_y_test, '../result/ResNet/GradientBoosting_best_cnn', use_grid_search=False)
-train_and_evaluate(SVC(random_state=42), svc_best_params, resnet_X_train, resnet_y_train, resnet_X_test,
-                   resnet_y_test, '../result/ResNet/SVC_best_cnn', use_grid_search=False)
-train_and_evaluate(SGDClassifier(random_state=42), sgd_best_params, resnet_X_train, resnet_y_train, resnet_X_test,
-                   resnet_y_test, '../result/ResNet/SGDClassifier_best_cnn', use_grid_search=False)
-train_and_evaluate(GaussianNB(), gnb_best_params, resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test,
-                   '../result/ResNet/GaussianNB_best_cnn', use_grid_search=False)
+    # Обучение и оценка моделей для ResNet данных с лучшими параметрами от CNN
+    print("Training and evaluating models for ResNet data with best CNN parameters")
+    train_and_evaluate(RandomForestClassifier(random_state=42), rf_best_params, resnet_X_train, resnet_y_train,
+                       resnet_X_test, resnet_y_test, '../result/ResNet/RandomForest_best_cnn', use_grid_search=False)
+    train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_best_params, resnet_X_train, resnet_y_train,
+                       resnet_X_test, resnet_y_test, '../result/ResNet/GradientBoosting_best_cnn', use_grid_search=False)
+    train_and_evaluate(SVC(random_state=42), svc_best_params, resnet_X_train, resnet_y_train, resnet_X_test,
+                       resnet_y_test, '../result/ResNet/SVC_best_cnn', use_grid_search=False)
+    train_and_evaluate(SGDClassifier(random_state=42), sgd_best_params, resnet_X_train, resnet_y_train, resnet_X_test,
+                       resnet_y_test, '../result/ResNet/SGDClassifier_best_cnn', use_grid_search=False)
+    train_and_evaluate(GaussianNB(), gnb_best_params, resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test,
+                       '../result/ResNet/GaussianNB_best_cnn', use_grid_search=False)
 
-# Обучение и оценка моделей для ResNet данных со стандартными параметрами
-print("Training and evaluating models for ResNet data with default parameters")
-train_and_evaluate(RandomForestClassifier(random_state=42), rf_param_grid, resnet_X_train, resnet_y_train,
-                   resnet_X_test, resnet_y_test, '../result/ResNet/RandomForest')
-train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_param_grid, resnet_X_train, resnet_y_train,
-                   resnet_X_test, resnet_y_test, '../result/ResNet/GradientBoosting')
-train_and_evaluate(SVC(random_state=42), svc_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
-                   resnet_y_test, '../result/ResNet/SVC')
-train_and_evaluate(SGDClassifier(random_state=42), sgd_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
-                   resnet_y_test, '../result/ResNet/SGDClassifier')
-train_and_evaluate(GaussianNB(), {}, resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test,
-                   '../result/ResNet/GaussianNB', use_grid_search=False)
+    # Обучение и оценка моделей для ResNet данных со стандартными параметрами
+    print("Training and evaluating models for ResNet data with default parameters")
+    train_and_evaluate(RandomForestClassifier(random_state=42), rf_param_grid, resnet_X_train, resnet_y_train,
+                       resnet_X_test, resnet_y_test, '../result/ResNet/RandomForest')
+    train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_param_grid, resnet_X_train, resnet_y_train,
+                       resnet_X_test, resnet_y_test, '../result/ResNet/GradientBoosting')
+    train_and_evaluate(SVC(random_state=42), svc_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
+                       resnet_y_test, '../result/ResNet/SVC')
+    train_and_evaluate(SGDClassifier(random_state=42), sgd_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
+                       resnet_y_test, '../result/ResNet/SGDClassifier')
+    train_and_evaluate(GaussianNB(), {}, resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test,
+                       '../result/ResNet/GaussianNB', use_grid_search=False)
