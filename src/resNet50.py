@@ -26,7 +26,7 @@ def create_resnet50(input_shape, number_of_classes, tune_at_layer):
     model = Model(inputs=base_model.input, outputs=predictions)
 
     # compiling a model
-    model.compile(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
@@ -43,7 +43,14 @@ def extract_features_resnet50(data_generator, raw_data_dir):
 
     # Training the model on data
     colored_print("Training and validating model on data...", 'y')
-    early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-    model.fit(data_generator['train'], validation_data=data_generator['test'], epochs=50, callbacks=[early_stopping])
+    early_stopping = EarlyStopping(monitor='val_accuracy', patience=10, restore_best_weights=True)
+    model.fit(data_generator['train'], validation_data=data_generator['test'], epochs=30, callbacks=[early_stopping])
 
-    return extract_features(data_generator, model, resnet50=True)
+    model_for_extraction = Model(inputs=model.input, outputs=model.get_layer('global_average_pooling2d').output)
+
+    colored_print('\nExtracting from train:')
+    X_train, y_train, train_df = extract_features(data_generator['train'], model_for_extraction, resnet50=True)
+    colored_print('\nExtracting from test:')
+    X_test, y_test, test_df = extract_features(data_generator['test'], model_for_extraction, resnet50=True)
+
+    return X_train, y_train, train_df, X_test, y_test, test_df

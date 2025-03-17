@@ -59,8 +59,8 @@ def train_and_evaluate(model, param_grid, X_train, y_train, X_test, y_test, resu
         grid_search.fit(X_train, y_train)
         best_params = grid_search.best_params_
         accuracy = grid_search.best_score_
-        colored_print(f'Best parameters: {best_params}', 'y')
-        colored_print(f'Validation Accuracy: {accuracy:.2f}', 'y')
+        colored_print(f'Best parameters: {best_params}')
+        colored_print(f'Validation Accuracy: {accuracy:.2f}')
     else:
         best_params = model.get_params()
         accuracy = None
@@ -69,7 +69,7 @@ def train_and_evaluate(model, param_grid, X_train, y_train, X_test, y_test, resu
     best_model.fit(X_train, y_train)
     y_pred = best_model.predict(X_test)
     test_accuracy = accuracy_score(y_test, y_pred)
-    colored_print(f'Test Accuracy: {test_accuracy:.2f}', 'y')
+    colored_print(f'Test Accuracy: {test_accuracy:.2f}')
     cm = confusion_matrix(y_test, y_pred)
     save_results(result_dir, best_params, accuracy, test_accuracy, cm)
     return best_params
@@ -115,20 +115,20 @@ def evaluate_classic_models(processed_data_dir, results_dir):
     colored_print('Train and score models on CNN data', 'y')
     cnn_results = os.path.join(results_dir, 'CNN')
 
-    colored_print('Random Forest...')
+    colored_print('Random Forest...', 'c')
     rf_best_params = train_and_evaluate(RandomForestClassifier(random_state=42), rf_param_grid, cnn_X_train,
                                         cnn_y_train, cnn_X_test, cnn_y_test, os.path.join(cnn_results, 'RandomForest'))
-    colored_print('Gradient Boosting...')
+    colored_print('Gradient Boosting...', 'c')
     gb_best_params = train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_param_grid, cnn_X_train,
                                         cnn_y_train, cnn_X_test, cnn_y_test,
                                         os.path.join(cnn_results, 'GradientBoosting'))
-    colored_print('SVC...')
+    colored_print('SVC...', 'c')
     svc_best_params = train_and_evaluate(SVC(random_state=42), svc_param_grid, cnn_X_train, cnn_y_train, cnn_X_test,
                                          cnn_y_test, os.path.join(cnn_results, 'SVC'))
-    colored_print('SGD Classifier...')
+    colored_print('SGD Classifier...', 'c')
     sgd_best_params = train_and_evaluate(SGDClassifier(random_state=42), sgd_param_grid, cnn_X_train, cnn_y_train,
                                          cnn_X_test, cnn_y_test, os.path.join(cnn_results, 'SGDClassifier'))
-    colored_print('Gaussian Naive Bias...')
+    colored_print('Gaussian Naive Bias...', 'c')
     gnb_best_params = train_and_evaluate(GaussianNB(), {}, cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test,
                                          os.path.join(cnn_results, 'GaussianNB'), use_grid_search=False)
 
@@ -136,21 +136,21 @@ def evaluate_classic_models(processed_data_dir, results_dir):
     colored_print('Train and score models on ResNet50 data + the best CNN params', 'y')
     resnet_results = os.path.join(results_dir, 'ResNet/best_CNN_params')
 
-    colored_print('Random Forest...')
+    colored_print('Random Forest...', 'c')
     train_and_evaluate(RandomForestClassifier(random_state=42), rf_best_params, resnet_X_train, resnet_y_train,
                        resnet_X_test, resnet_y_test, os.path.join(resnet_results, 'RandomForest'),
                        use_grid_search=False)
-    colored_print('Gradient Boosting...')
+    colored_print('Gradient Boosting...', 'c')
     train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_best_params, resnet_X_train, resnet_y_train,
                        resnet_X_test, resnet_y_test, os.path.join(resnet_results, 'GradientBoosting'),
                        use_grid_search=False)
-    colored_print('SVC...')
+    colored_print('SVC...', 'c')
     train_and_evaluate(SVC(random_state=42), svc_best_params, resnet_X_train, resnet_y_train, resnet_X_test,
                        resnet_y_test, os.path.join(resnet_results, 'SVC'), use_grid_search=False)
-    colored_print('SGD Classifier...')
+    colored_print('SGD Classifier...', 'c')
     train_and_evaluate(SGDClassifier(random_state=42), sgd_best_params, resnet_X_train, resnet_y_train, resnet_X_test,
                        resnet_y_test, os.path.join(resnet_results, 'SGDClassifier'), use_grid_search=False)
-    colored_print('Gaussian Naive Bias...')
+    colored_print('Gaussian Naive Bias...', 'c')
     train_and_evaluate(GaussianNB(), gnb_best_params, resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test,
                        os.path.join(resnet_results, 'GaussianNB'), use_grid_search=False)
 
@@ -158,18 +158,18 @@ def evaluate_classic_models(processed_data_dir, results_dir):
     colored_print('Train and score models on ResNet50 data + default params', 'y')
     resnet_default_results = os.path.join(results_dir, 'ResNet/default_params')
 
-    colored_print('Random Forest...')
+    colored_print('Random Forest...', 'c')
     train_and_evaluate(RandomForestClassifier(random_state=42), rf_param_grid, resnet_X_train, resnet_y_train,
                        resnet_X_test, resnet_y_test, os.path.join(resnet_default_results, 'RandomForest'))
-    colored_print('Gradient Boosting...')
+    colored_print('Gradient Boosting...', 'c')
     train_and_evaluate(GradientBoostingClassifier(random_state=42), gb_param_grid, resnet_X_train, resnet_y_train,
                        resnet_X_test, resnet_y_test, os.path.join(resnet_default_results, 'GradientBoosting'))
-    colored_print('SVC...')
+    colored_print('SVC...', 'c')
     train_and_evaluate(SVC(random_state=42), svc_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
                        resnet_y_test, os.path.join(resnet_default_results, 'SVC'))
-    colored_print('SGD Classifier...')
+    colored_print('SGD Classifier...', 'c')
     train_and_evaluate(SGDClassifier(random_state=42), sgd_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
                        resnet_y_test, os.path.join(resnet_default_results, 'SGDClassifier'))
-    colored_print('Gaussian Naive Bias...')
+    colored_print('Gaussian Naive Bias...', 'c')
     train_and_evaluate(GaussianNB(), {}, resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test,
                        os.path.join(resnet_default_results, 'GaussianNB'), use_grid_search=False)

@@ -51,6 +51,7 @@ def save_results(result_dir, best_params, accuracy, test_accuracy, cm):
 
 
 def train_and_evaluate(model, param_grid, X_train, y_train, X_test, y_test, result_dir, use_grid_search=True):
+    print(model)
     if use_grid_search:
         grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, scoring='accuracy')
         grid_search.fit(X_train, y_train)
@@ -61,6 +62,7 @@ def train_and_evaluate(model, param_grid, X_train, y_train, X_test, y_test, resu
         accuracy = None
 
     best_model = model.set_params(**best_params)
+    print(model, 'found best model...')
     best_model.fit(X_train, y_train)
     y_pred = best_model.predict(X_test)
     test_accuracy = accuracy_score(y_test, y_pred)
@@ -87,7 +89,7 @@ def evaluate_knn(processed_data_dir, results_dir):
     resnet_X_train_pca, resnet_X_test_pca = apply_pca(resnet_X_train, resnet_X_test)
 
     knn_param_grid = {
-        'n_neighbors': range(1, 31),
+        'n_neighbors': range(25, 35),
         'metric': ['euclidean', 'manhattan']
     }
 

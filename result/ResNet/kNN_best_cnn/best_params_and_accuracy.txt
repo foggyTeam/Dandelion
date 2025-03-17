@@ -1,2 +1,2 @@
-Best parameters: {'n_neighbors': 28, 'metric': 'euclidean'}
+Best parameters: {'n_neighbors': 32, 'metric': 'euclidean'}
 Test Accuracy: 0.28

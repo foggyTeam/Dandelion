@@ -28,12 +28,10 @@ def main():
         colored_print('ResNet50? y / n', 'c')
         if 'y' in input():
             # extract features from dataset via ResNet50
-            colored_print('\nExtracting from train:')
-            X_train, y_train, train_df = extract_features_resnet50(train_data_generator)
-            save_csv(train_df, PROCESSED_DATA_DIR, 'resNet50_train.csv')
+            X_train, y_train, train_df, X_test, y_test, test_df = extract_features_resnet50(
+                {'train': train_data_generator, 'test': test_data_generator}, RAW_DATA_DIR)
 
-            colored_print('\nExtracting from test:')
-            X_test, y_test, test_df = extract_features_resnet50(test_data_generator)
+            save_csv(train_df, PROCESSED_DATA_DIR, 'resNet50_train.csv')
             save_csv(test_df, PROCESSED_DATA_DIR, 'resNet50_test.csv')
 
         colored_print('Custom CNN? y / n', 'c')
