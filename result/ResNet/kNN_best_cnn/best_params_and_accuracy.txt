@@ -1,2 +1,0 @@
-Best parameters: {'n_neighbors': 28, 'metric': 'euclidean'}
-Test Accuracy: 0.28

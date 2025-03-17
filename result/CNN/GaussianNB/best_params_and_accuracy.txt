@@ -1,3 +1,0 @@
-Best parameters: {}
-Validation Accuracy: 0.25
-Test Accuracy: 0.11

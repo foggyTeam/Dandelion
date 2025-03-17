@@ -1,3 +1,0 @@
-Best parameters: {'C': 1, 'kernel': 'rbf'}
-Validation Accuracy: 0.28
-Test Accuracy: 0.11

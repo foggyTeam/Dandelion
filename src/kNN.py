@@ -1,4 +1,7 @@
+import os
+
 import matplotlib
+import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
@@ -6,9 +9,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
+from src.utils import colored_print
+
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import os
 
 
 def load_and_standardize_data(train_path, test_path):
@@ -66,15 +69,19 @@ def train_and_evaluate(model, param_grid, X_train, y_train, X_test, y_test, resu
     return best_params
 
 
-def evaluate_knn(processed_data_dir):
+def evaluate_knn(processed_data_dir, results_dir):
     cnn_train_path = os.path.join(processed_data_dir, 'cnn_train.csv')
     cnn_test_path = os.path.join(processed_data_dir, 'cnn_test.csv')
     resnet_train_path = os.path.join(processed_data_dir, 'resNet50_train.csv')
     resnet_test_path = os.path.join(processed_data_dir, 'resNet50_test.csv')
 
-    cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test = load_and_standardize_data(cnn_train_path, cnn_test_path)
-    resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test = load_and_standardize_data(resnet_train_path,
-                                                                                             resnet_test_path)
+    cnn_X_train, cnn_y_train, cnn_X_test, cnn_y_test = (
+        load_and_standardize_data(cnn_train_path, cnn_test_path))
+    colored_print('CNN data loaded...')
+
+    resnet_X_train, resnet_y_train, resnet_X_test, resnet_y_test = (
+        load_and_standardize_data(resnet_train_path, resnet_test_path))
+    colored_print('ResNet50 data loaded...')
 
     cnn_X_train_pca, cnn_X_test_pca = apply_pca(cnn_X_train, cnn_X_test)
     resnet_X_train_pca, resnet_X_test_pca = apply_pca(resnet_X_train, resnet_X_test)
@@ -84,17 +91,19 @@ def evaluate_knn(processed_data_dir):
         'metric': ['euclidean', 'manhattan']
     }
 
-    # Обучение и оценка моделей для CNN данных
+    # Train and score model on CNN data
+    colored_print('Train and score model on CNN data', 'y')
     knn_best_params = train_and_evaluate(KNeighborsClassifier(), knn_param_grid, cnn_X_train_pca, cnn_y_train,
-                                         cnn_X_test_pca, cnn_y_test, '../result/CNN/kNN')
+                                         cnn_X_test_pca, cnn_y_test, os.path.join(results_dir, 'CNN/kNN'))
 
-    # Обучение и оценка моделей для ResNet данных с лучшими параметрами от CNN
+    # Train and score model on ResNet50 data + the best CNN params
+    colored_print('Train and score model on ResNet50 data + the best CNN params', 'y')
     best_knn_params_dict = {'n_neighbors': knn_best_params['n_neighbors'], 'metric': knn_best_params['metric']}
     train_and_evaluate(KNeighborsClassifier(), best_knn_params_dict, resnet_X_train_pca, resnet_y_train,
                        resnet_X_test_pca,
-                       resnet_y_test, '../result/ResNet/kNN_best_cnn', use_grid_search=False)
+                       resnet_y_test, os.path.join(results_dir, 'ResNet/kNN_best_cnn'), use_grid_search=False)
 
-    # Обучение и оценка моделей для ResNet данных со стандартными параметрами
-    print("Training and evaluating model for ResNet data with default parameters")
+    # Train and score model on ResNet50 data + default params
+    colored_print('Train and score model on ResNet50 data + default params', 'y')
     train_and_evaluate(KNeighborsClassifier(), knn_param_grid, resnet_X_train, resnet_y_train, resnet_X_test,
-                       resnet_y_test, '../result/ResNet/kNN')
+                       resnet_y_test, os.path.join(results_dir, 'ResNet/kNN'))

@@ -1,3 +1,0 @@
-Best parameters: {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 200}
-Validation Accuracy: 0.25
-Test Accuracy: 0.12

@@ -1,3 +1,0 @@
-Best parameters: {'alpha': 0.01, 'penalty': 'l2'}
-Validation Accuracy: 0.18
-Test Accuracy: 0.11

@@ -1,3 +1,0 @@
-Best parameters: {'metric': 'euclidean', 'n_neighbors': 28}
-Validation Accuracy: 0.25
-Test Accuracy: 0.15
