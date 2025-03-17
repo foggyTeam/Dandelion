@@ -34,6 +34,8 @@ def augment_normalize_data(data_paths, labels, batch_size=64, target_size=(224, 
         rotation_range=20,
         zoom_range=0.2,
         horizontal_flip=True,
+        vertical_flip=True,
+        brightness_range=[0.8, 1.2],
         fill_mode='nearest')
 
     # test can be normalized only

@@ -1,3 +1,4 @@
+from src.analyze_data import analyze_data
 from src.cnn import extract_features_cnn
 from src.kNN import evaluate_knn
 from src.models import evaluate_classic_models
@@ -46,8 +47,12 @@ def main():
             X_test, y_test, test_df = extract_features_cnn(test_data_generator, RAW_DATA_DIR)
             save_csv(test_df, PROCESSED_DATA_DIR, 'cnn_test.csv')
 
+    # data analysis
+    colored_print('\nAnalysis of processed data', 'c')
+    analyze_data(PROCESSED_DATA_DIR)
+
     # train models
-    colored_print('Do you need to train models? y / n', 'c')
+    colored_print('\nDo you need to train models? y / n', 'c')
     if 'y' in input():
         colored_print('kNN? y / n', 'c')
         if 'y' in input():
