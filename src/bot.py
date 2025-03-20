@@ -16,14 +16,16 @@ def handle_photo(message):
     file_info = bot.get_file(message.photo[0].file_id)
     file = bot.download_file(file_info.file_path)
 
-    flower, confidence = predict_flower(file)
+    flower, confidence, probabilities = predict_flower(file)
     colored_print(f'\nPredicted {flower} with confidence {confidence:.2f}', 'c')
 
     if confidence >= 0.8:
-        answer = f'Это же {flower}!'
+        answer = f'Это же {flower}!\n'
     elif confidence >= 0.4:
-        answer = f'Возможно, {flower}? (уверен на {(confidence * 100):.0f}%)'
+        answer = f'Возможно, {flower}? (уверен на {(confidence * 100):.0f}%)\n'
     else:
-        answer = f'Я не знаю, что это за цветок. Может быть, {flower}? (уверен на {(confidence * 100):.0f}%)'
+        answer = f'Я не знаю, что это за цветок. Может быть, {flower}? (уверен на {(confidence * 100):.0f}%)\n'
 
+    for flower, probability in probabilities:
+        answer += f'\n{flower}: {probability}%'
     bot.reply_to(message, answer)

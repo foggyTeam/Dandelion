@@ -44,14 +44,20 @@ def predict(image):
     image = Image.open(io.BytesIO(image))
     image = preprocess(image)
     image = image.unsqueeze(0).to(device)
+
     with torch.no_grad():
         outputs = model(image)
         probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
         confidence, predicted = torch.max(probabilities, 0)
-    return predicted.item(), confidence.item()
+
+    return predicted.item(), confidence.item(), probabilities
 
 
 def predict_flower(image):
-    flower_key, confidence = predict(image)
+    flower_key, confidence, probabilities = predict(image)
 
-    return flower_classes[flower_key], confidence
+    probs_dict = dict({})
+    for i in range(len(probabilities)):
+        probs_dict[flower_classes[i]] = int(probabilities[i].item() * 100)
+
+    return flower_classes[flower_key], confidence, sorted(probs_dict.items(), key=lambda item: item[1], reverse=True)
