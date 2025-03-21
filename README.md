@@ -1,6 +1,10 @@
 # Dandelion
 
-_Телеграм-бот, распознаванающий тип цветка по изображению._
+_Телеграм-бот, распознающий тип цветка по изображению._
+
+[GitHub](https://github.com/foggyTeam/Dandelion)
+
+[Google Slides](https://docs.google.com/presentation/d/1HIh1DOSdzfC5lbUNx0QXvmyz-Wi5GFagbqdCL_H5E-A/edit?usp=sharing)
 
 ## О проекте
 
